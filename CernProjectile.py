@@ -4,6 +4,21 @@ import random
 
 def ball_animation():
     global ball_speed_x, ball_speed_y, ball_angle, lives, i
+    screen.fill(bg_color)
+    screen.blit(background, (0,0))
+    screen.blit(target, (screen_width * i/48, screen_height * 36/40))
+    target_rect = pygame.Rect(screen_width * i/48, screen_height * 69/72, target.get_width(), 2)
+    pygame.draw.ellipse(screen, (0,200,200), ball)
+    pygame.draw.rect(screen, (0,0,0), line)
+    launcher_copy = pygame.transform.rotate(launcher, -1 * ball_angle)
+    screen.blit(launcher_copy, (screen_width / 120 * 27 - int(launcher_copy.get_width() / 4), screen_height / 120 * 95 - int(launcher_copy.get_height() /2)))
+
+    text = font.render("Angle " + "{:.2f}".format(-1 * ball_angle), 30, (200,0,0))
+    text1 = font.render("Velocity " + "{:.2f}".format(ball_velocity), 30, (200,0,0))
+    textlives = font.render("Lives Left: " + str(lives), 30, (200,0,0))
+    screen.blit(textlives, (screen_width * 6/8, screen_height * 1/12))
+    screen.blit(text1, (screen_width/6, screen_height/8))
+    screen.blit(text, (screen_width/6, screen_height/12))
     ball.x += ball_speed_x
     ball.y += ball_speed_y
 
@@ -26,12 +41,6 @@ def ball_animation():
         ball.left = screen_width / 120 * 30.4
         lives -= 1
 
-    #if ball.top <= -15:
-    #    ball_speed_x = 0
-    #    ball_speed_y = 0
-    #    ball.bottom = 650
-    #    ball.left = 304
-    #    lives -= 1
 
     if ball.right >= screen_width + 20:
         ball_speed_x = 0
@@ -62,6 +71,30 @@ def update():
 def completed():
     global background
     background = pygame.image.load('ChallengeRoom1(Door1Open).jpg')
+
+def player_animation():
+    global walkcount, player_x, i, font, text_launcher, walking
+    screen.blit(background, (0,0))
+    screen.blit(launcher, (screen_width / 120 * 27 - int(launcher.get_width() / 4), screen_height / 120 * 95 - int(launcher.get_height() /2)))
+    screen.blit(target, (screen_width * i/48, screen_height * 36/40))
+    screen.blit(text_launcher, (screen_width *2 / 6, screen_height/8))
+    if walkcount + 1 >= 27:
+        walkcount = 0
+    if walking:
+        screen.blit(player_walking [walkcount//7], (player_x, player_y))
+        walkcount += 1
+    if walking == False:
+        screen.blit(player_standing, (player_x, player_y))
+    if player_x > screen_width / 100 * 41:
+        player_x = screen_width / 100 * 41
+        text_launcher = font.render("Press Enter At Launcher", 40, (200,0,0))
+    if player_x < screen_width / 100 * 25 and player_x > screen_width / 100 * 18:
+        if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    intro = False
+                    playing = True
+        
+    pygame.display.update()
 
 # General Set up
 pygame.init()
@@ -98,13 +131,25 @@ lives = 3
 launcher = pygame.image.load('Projectile-Launcher.png')
 background = pygame.image.load('ChallengeRoom1.jpg')
 
-player = pygame.image
-
+player_walking = [pygame.image.load('charv2(1).png'), pygame.image.load('charv2(2).png'), pygame.image.load('charv2(3).png'), pygame.image.load('charv2(4).png')]
+player_standing = pygame.image.load('charv2(5).png')
+player_width = 110
+player_height = 160
+player_vel = 5
+walkcount = 0
+player_x = 0
+player_y = screen_height / 60 *43
+walking = False
 
 bg_color = pygame.Color('grey12')
 light_grey = (200,200,200)
 
 font = pygame.font.SysFont("comicsans", 30, True)
+text_launcher = font.render("", 40, (200,0,0))
+
+#Stages
+intro = True
+playing = False
 
 
 while True:
@@ -113,36 +158,75 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        
+    while intro:
 
+            for event in pygame.event.get():
+                 if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+            
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    player_x -= 1.5
+                    walking = True
+                if event.key == pygame.K_RIGHT:
+                    player_x += 1.5
+                    walking = True
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT:
+                    walking = False
+                if event.key == pygame.K_RIGHT:
+                    walking = False
+                if event.key == pygame.K_RETURN:
+                    if player_x < screen_width / 100 * 25 and player_x > screen_width / 100 * 18:
+                        intro = False
+                        playing = True
+                        break
+
+           
+            print(walking)
+            player_animation()
+            clock.tick(60)
 
 
 # Key Actions
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_DOWN:
-                ball_angle_increment += 0.2
-            if event.key == pygame.K_UP:
-                ball_angle_increment -= 0.2
-            if event.key == pygame.K_LEFT:
-                ball_velocity_increment -= 0.1
-            if event.key == pygame.K_RIGHT:
-                ball_velocity_increment += 0.1
-            if event.key == pygame.K_RETURN:
-                if ball_speed_x == 0 or ball_speed_y == 0:
-                    ball_speed_x = ball_velocity * math.cos(ball_angle * math.pi/180)
-                    ball_speed_y = ball_velocity * math.sin(ball_angle * math.pi/180)
-                else:
-                    j = 5
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_DOWN:
+            ball_angle_increment += 0.02 
+        if event.key == pygame.K_UP:
+            ball_angle_increment -= 0.02
+        if event.key == pygame.K_LEFT:
+            ball_velocity_increment -= 0.01
+        if event.key == pygame.K_RIGHT:
+            ball_velocity_increment += 0.01
+        if event.key == pygame.K_RETURN:
+            if ball_speed_x == 0 or ball_speed_y == 0:
+                ball_speed_x = ball_velocity * math.cos(ball_angle * math.pi/180)
+                ball_speed_y = ball_velocity * math.sin(ball_angle * math.pi/180)
+            else:
+                j = 5
                     
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_DOWN:
-                ball_angle_increment = 0
-            if event.key == pygame.K_UP:
-                ball_angle_increment = 0
-            if event.key == pygame.K_LEFT:
-                ball_velocity_increment = 0
-            if event.key == pygame.K_RIGHT:
-                ball_velocity_increment = 0
-       
+    if event.type == pygame.KEYUP:
+        if event.key == pygame.K_DOWN:
+            ball_angle_increment = 0
+        if event.key == pygame.K_UP:
+            ball_angle_increment = 0
+        if event.key == pygame.K_LEFT:
+            ball_velocity_increment = 0
+        if event.key == pygame.K_RIGHT:
+            ball_velocity_increment = 0
+    ball_animation()
+    update()
+    ball_speed_y += gravity/60  
+
+    #Launcher Animation
+    launcher_copy = pygame.transform.rotate(launcher, -1 * ball_angle)
+    screen.blit(launcher_copy, (screen_width / 120 * 27 - int(launcher_copy.get_width() / 4), screen_height / 120 * 95 - int(launcher_copy.get_height() /2)))
+    
+     
 
     
     ball_animation()
@@ -151,24 +235,26 @@ while True:
     #ball_angle += ball_angle_increment
     ball_speed_y += gravity/60  
     
+    
     #Visuals
-    screen.fill(bg_color)
-    screen.blit(background, (0,0))
-    screen.blit(target, (screen_width * i/48, screen_height * 36/40))
-    target_rect = pygame.Rect(screen_width * i/48, screen_height * 69/72, target.get_width(), 2)
-    pygame.draw.ellipse(screen, (0,200,200), ball)
-    pygame.draw.rect(screen, (0,0,0), line)
-    text = font.render("Angle " + str(-1 * ball_angle), 30, (200,0,0))
-    text1 = font.render("Velocity " + str(ball_velocity), 30, (200,0,0))
-    textlives = font.render("Lives Left: " + str(lives), 30, (200,0,0))
-    screen.blit(textlives, (screen_width * 6/8, screen_height * 1/12))
-    screen.blit(text1, (screen_width/6, screen_height/8))
-    screen.blit(text, (screen_width/6, screen_height/12))
+    
+    #screen.fill(bg_color)
+    #screen.blit(background, (0,0))
+    #screen.blit(target, (screen_width * i/48, screen_height * 36/40))
+    #target_rect = pygame.Rect(screen_width * i/48, screen_height * 69/72, target.get_width(), 2)
+    #pygame.draw.ellipse(screen, (0,200,200), ball)
+    #pygame.draw.rect(screen, (0,0,0), line)
+    #text = font.render("Angle " + str(-1 * ball_angle), 30, (200,0,0))
+    #text1 = font.render("Velocity " + str(ball_velocity), 30, (200,0,0))
+    #textlives = font.render("Lives Left: " + str(lives), 30, (200,0,0))
+    #screen.blit(textlives, (screen_width * 6/8, screen_height * 1/12))
+    #screen.blit(text1, (screen_width/6, screen_height/8))
+    #screen.blit(text, (screen_width/6, screen_height/12))
     #Launcher Animation
-    launcher_copy = pygame.transform.rotate(launcher, -1 * ball_angle)
-    screen.blit(launcher_copy, (screen_width / 120 * 27 - int(launcher_copy.get_width() / 4), screen_height / 120 * 95 - int(launcher_copy.get_height() /2)))
+    #launcher_copy = pygame.transform.rotate(launcher, -1 * ball_angle)
+    #screen.blit(launcher_copy, (screen_width / 120 * 27 - int(launcher_copy.get_width() / 4), screen_height / 120 * 95 - int(launcher_copy.get_height() /2)))
     
 
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(30)
 
