@@ -60,7 +60,7 @@ ball_velocity = 1
 gravity = 9.8
 
 #Graphics
-launcher = pygame.image.load('Projectile Launcher(1).png')
+launcher = pygame.image.load('Projectile Launcher.png')
 #launcher.set_colorkey((0,0,0))
 background = pygame.image.load('ChallengeRoom1.jpg')
 #launcher.set_alpha(100)
