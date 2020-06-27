@@ -76,8 +76,6 @@ target_rect = pygame.Rect(screen_width * i/48, screen_height * 69/72, target.get
 
 ball = pygame.Rect(screen_width / 120 * 30.4,screen_height / 80 * 64,20 ,20)
 line = pygame.Rect(screen_width / 120 * 28,screen_height / 80 * 65,50, 3)
-line2 = pygame.Rect(screen_width / 120 * 28,screen_height / 80 * 65,50, 8)
-
 wall = pygame.Rect(screen_width / 120 * 50, screen_height, screen_width / 120 * 50, screen_height / 80 * 50)
 gravity = 9.8
 
@@ -91,8 +89,8 @@ gravity = 9.8
 lives = 3
 
 #Graphics
-launcher = pygame.image.load('Projectile Launcher.png')
-background = pygame.image.load('ChallengeRoom1.jpg')
+launcher = pygame.image.load('Projectile-Launcher.png')
+background = pygame.image.load('ChallengeRoom.jpg')
 
 
 bg_color = pygame.Color('grey12')
@@ -146,7 +144,6 @@ while True:
     target_rect = pygame.Rect(screen_width * i/48, screen_height * 69/72, target.get_width(), 2)
     pygame.draw.ellipse(screen, (10,200,200), ball)
     pygame.draw.rect(screen, (0,0,0), line)
-    pygame.draw.rect(screen, (0,0,0), line2)
     pygame.draw.rect(screen, (0,0,0), wall)
     text = font.render("Angle " + str(-1 * ball_angle), 30, (200,0,0))
     text1 = font.render("Velocity " + str(ball_velocity), 30, (200,0,0))
