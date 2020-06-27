@@ -70,13 +70,14 @@ screen = pygame.display.set_mode((screen_width,screen_height))
 pygame.display.set_caption('projectile')
 i = 38
 
+
 target = pygame.image.load('Target.png')
 target_rect = pygame.Rect(screen_width * i/48, screen_height * 69/72, target.get_width(), 2)
 
-
+wall = pygame.Rect(screen_width / 120 * 60, screen_height * 66/100, screen_width / 120 * 10, screen_height * 34/100)
 ball = pygame.Rect(screen_width / 120 * 30.4,screen_height / 80 * 64,20 ,20)
 line = pygame.Rect(screen_width / 120 * 28,screen_height / 80 * 65,50, 3)
-wall = pygame.Rect(screen_width / 120 * 50, screen_height, screen_width / 120 * 50, screen_height / 80 * 50)
+
 gravity = 9.8
 
 ball_speed_x = 0
@@ -144,7 +145,6 @@ while True:
     target_rect = pygame.Rect(screen_width * i/48, screen_height * 69/72, target.get_width(), 2)
     pygame.draw.ellipse(screen, (10,200,200), ball)
     pygame.draw.rect(screen, (0,0,0), line)
-    pygame.draw.rect(screen, (0,0,0), wall)
     text = font.render("Angle " + str(-1 * ball_angle), 30, (200,0,0))
     text1 = font.render("Velocity " + str(ball_velocity), 30, (200,0,0))
     textlives = font.render("Lives Left: " + str(lives), 30, (200,0,0))
