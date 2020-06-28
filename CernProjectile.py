@@ -91,7 +91,7 @@ def completed():
     
 
 def player_animation():
-    global walkcount, player_x, i, font, text_launcher, walking, sound1, sound2, j
+    global walkcount, player_x, i, font, text_launcher, walking, sound1, sound2, j, speech
     screen.blit(background, (0,0))
     screen.blit(launcher, (screen_width / 120 * 27 - int(launcher.get_width() / 4), screen_height / 120 * 95 - int(launcher.get_height() /2)))
     screen.blit(target, (screen_width * i/48, screen_height * 36/40))
@@ -99,6 +99,8 @@ def player_animation():
     screen.blit(astronaut, (screen_width * 4/6, screen_height / 60 *39))
     if walkcount + 1 >= 27:
         walkcount = 0
+    if player_x < 0:
+        player_x = 0
     if walking:
         screen.blit(player_walking [walkcount//7], (player_x, player_y))
         walkcount += 1
@@ -106,25 +108,60 @@ def player_animation():
         screen.blit(player_standing, (player_x, player_y))
     if player_x > screen_width / 100 * 41:
         player_x = screen_width / 100 * 41
-        text_launcher = font.render("Press Enter At Launcher", 40, (200,0,0))
         if j == 1:
+            speech = speech_1
+            screen.blit(speech, (screen_width * 3/8, screen_height * 3/8))
+            pygame.display.flip()
             sound1.play()
-            pygame.time.delay(13000)
+            pygame.time.delay(12000)
             sound2.play()
             pygame.time.delay(14000)
+            fill()
+            screen.blit(speech_2, (screen_width * 3/8, screen_height * 3/8))
+            pygame.display.flip()
             sound3.play()
-            pygame.time.delay(14000)
+            pygame.time.delay(3000)
+            fill()
+            screen.blit(speech_3, (screen_width * 3/8, screen_height * 3/8))
+            pygame.display.flip()
+            pygame.time.delay(3000)
+            fill()
+            screen.blit(speech_4, (screen_width * 3/8, screen_height * 3/8))
+            pygame.display.flip()
+            fill()
+            pygame.time.delay(3000)
+            screen.blit(speech_5, (screen_width * 3/8, screen_height * 3/8))
+            pygame.display.flip()
+            pygame.time.delay(3800)
+            fill()
+            screen.blit(speech_6, (screen_width * 3/8, screen_height * 3/8))
+            pygame.display.flip()
+            pygame.time.delay(3000)
+            fill()
+            text_launcher = font.render("Press Enter At Launcher", 40, (200,0,0))
             j = 0
     if j == 0:
        if player_x < screen_width / 100 * 25 and player_x > screen_width / 100:
-            text_enter = font.render("[Press Enter Here]",  30, (200,0,0))
-            screen.blit(text_enter, (screen_width / 100 * 25, screen_height / 100 * 60))
+            border = pygame.Rect(screen_width / 100 * 15, screen_height / 100 * 66, 215, 26)
+            pygame.draw.rect(screen, (0,0,0), border)
+            text_enter = font.render("[Press Enter Here]",  30, (255,255,255))
+            screen.blit(text_enter, (screen_width / 100 * 15, screen_height / 100 * 66))
             if event.type == pygame.KEYDOWN:
                  if event.key == pygame.K_RETURN:
                         intro = False
                         playing = True
         
     pygame.display.update()
+
+def fill():
+    global player_x
+    screen.blit(background, (0,0))
+    screen.blit(launcher, (screen_width / 120 * 27 - int(launcher.get_width() / 4), screen_height / 120 * 95 - int(launcher.get_height() /2)))
+    screen.blit(target, (screen_width * i/48, screen_height * 36/40))
+    screen.blit(text_launcher, (screen_width *2 / 6, screen_height/8))
+    screen.blit(astronaut, (screen_width * 4/6, screen_height / 60 *39))
+    screen.blit(player_standing, (player_x, player_y))
+
 
 
 
@@ -166,6 +203,13 @@ background = pygame.image.load('ChallengeRoom1.jpg')
 background_game = pygame.image.load('ChallengeRoom1(game scene).jpg')
 door_frame = pygame.image.load('DoorFrame.png')
 astronaut = pygame.image.load('astronaut instructor.png')
+
+speech_1 = pygame.image.load("IntroText(1).png")
+speech_2 = pygame.image.load("IntroText(2).png")
+speech_3 = pygame.image.load("IntroText(3).png")
+speech_4 = pygame.image.load("IntroText(4).png")
+speech_5 = pygame.image.load("IntroText(5).png")
+speech_6 = pygame.image.load("IntroText(6).png")
 
 sound1 = pygame.mixer.Sound('Part-1.wav')
 sound2 = pygame.mixer.Sound('Part-2.wav')
