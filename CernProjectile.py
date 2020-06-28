@@ -91,7 +91,7 @@ def completed():
     
 
 def player_animation():
-    global walkcount, player_x, i, font, text_launcher, walking
+    global walkcount, player_x, i, font, text_launcher, walking, sound1, sound2, j
     screen.blit(background, (0,0))
     screen.blit(launcher, (screen_width / 120 * 27 - int(launcher.get_width() / 4), screen_height / 120 * 95 - int(launcher.get_height() /2)))
     screen.blit(target, (screen_width * i/48, screen_height * 36/40))
@@ -107,11 +107,22 @@ def player_animation():
     if player_x > screen_width / 100 * 41:
         player_x = screen_width / 100 * 41
         text_launcher = font.render("Press Enter At Launcher", 40, (200,0,0))
-    if player_x < screen_width / 100 * 25 and player_x > screen_width / 100:
-        if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    intro = False
-                    playing = True
+        if j == 1:
+            sound1.play()
+            pygame.time.delay(13000)
+            sound2.play()
+            pygame.time.delay(14000)
+            sound3.play()
+            pygame.time.delay(14000)
+            j = 0
+    if j == 0:
+       if player_x < screen_width / 100 * 25 and player_x > screen_width / 100:
+            text_enter = font.render("[Press Enter Here]",  30, (200,0,0))
+            screen.blit(text_enter, (screen_width / 100 * 25, screen_height / 100 * 60))
+            if event.type == pygame.KEYDOWN:
+                 if event.key == pygame.K_RETURN:
+                        intro = False
+                        playing = True
         
     pygame.display.update()
 
@@ -128,6 +139,7 @@ screen_height = 600
 screen = pygame.display.set_mode((screen_width,screen_height))
 pygame.display.set_caption('projectile')
 i = 35
+j = 1
 
 #Graphics
 target = pygame.image.load('Target(1).png')
@@ -154,6 +166,13 @@ background = pygame.image.load('ChallengeRoom1.jpg')
 background_game = pygame.image.load('ChallengeRoom1(game scene).jpg')
 door_frame = pygame.image.load('DoorFrame.png')
 astronaut = pygame.image.load('astronaut instructor.png')
+
+sound1 = pygame.mixer.Sound('Part-1.wav')
+sound2 = pygame.mixer.Sound('Part-2.wav')
+sound3 = pygame.mixer.Sound('Part-3.wav')
+sound4 = pygame.mixer.Sound('Part-4_1.wav')
+sound5 = pygame.mixer.Sound('Part-5_1.wav')
+
 
 player_walking = [pygame.image.load('charv2(1).png'), pygame.image.load('charv2(2).png'), pygame.image.load('charv2(3).png'), pygame.image.load('charv2(4).png')]
 player_standing = pygame.image.load('charv2(5).png')
@@ -229,8 +248,6 @@ while True:
             if ball_speed_x == 0 or ball_speed_y == 0:
                 ball_speed_x = ball_velocity * math.cos(ball_angle * math.pi/180)
                 ball_speed_y = ball_velocity * math.sin(ball_angle * math.pi/180)
-            else:
-                j = 5
                     
     if event.type == pygame.KEYUP:
         if event.key == pygame.K_DOWN:
